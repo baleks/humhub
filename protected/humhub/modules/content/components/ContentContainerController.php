@@ -102,10 +102,13 @@ class ContentContainerController extends Controller
             return false;
         }
 
+        $userModule = Yii::$app->getModule('user');
         // Directly redirect guests to login page - if guest access isn't enabled
-        if (Yii::$app->user->isGuest && Yii::$app->getModule('user')->settings->get('auth.allowGuestAccess') != 1) {
-            Yii::$app->user->loginRequired();
-            return false;
+        if (Yii::$app->user->isGuest && $userModule->settings->get('auth.allowGuestAccess') != 1) {
+            if (! $userModule->isPublicAction($action)) {
+                Yii::$app->user->loginRequired();
+                return false;
+            }
         }
 
         $this->checkModuleIsEnabled();

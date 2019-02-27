@@ -22,7 +22,7 @@ class Module extends \humhub\components\Module
     public $controllerNamespace = 'humhub\modules\user\controllers';
 
     /**
-     * @var boolean option to translate all invite mails except self invites to the default language (true) or user language (false) 
+     * @var boolean option to translate all invite mails except self invites to the default language (true) or user language (false)
      */
     public $sendInviteMailsInGlobalLanguage = true;
 
@@ -79,13 +79,13 @@ class Module extends \humhub\components\Module
 
     /**
      * @var boolean defines if the user following is disabled or not.
-     * @since 1.2 
+     * @since 1.2
      */
     public $disableFollow = false;
 
     /**
      * @var boolean defines mark user e-mail field as required
-     * @since 1.2.2 
+     * @since 1.2.2
      */
     public $emailRequired = true;
 
@@ -106,6 +106,11 @@ class Module extends \humhub\components\Module
     private $defaultPasswordStrength = [
         '/^.{5,255}$/' => 'Password needs to be at least 8 characters long.',
     ];
+
+    /**
+     * @var array defines a public actions for external services
+     */
+    private $publicActions = [];
 
     /**
      * @inheritdoc
@@ -154,5 +159,36 @@ class Module extends \humhub\components\Module
     public function isCustomPasswordStrength()
     {
         return $this->defaultPasswordStrength !== $this->getPasswordStrength();
+    }
+
+    /**
+     * Return array of a public actions for external services
+     *
+     * @return array
+     */
+    public function getPublicActions()
+    {
+        return $this->publicActions;
+    }
+
+    /**
+     * Extend user module public actions
+     *
+     * @param array $actions
+     */
+    public function setPublicActions($actions)
+    {
+        $this->publicActions = array_merge($this->publicActions, $actions);
+    }
+
+    /**
+     * Checking if given action has public access
+     *
+     * @param $action
+     * @return bool
+     */
+    public function isPublicAction($action)
+    {
+        return in_array($action->id, $this->getPublicActions());
     }
 }

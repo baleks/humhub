@@ -147,7 +147,9 @@ class AccessControl extends ActionFilter
 
         if (!$this->controllerAccess->run()) {
             if ($this->controllerAccess->code == 401) {
-                return $this->loginRequired();
+                if (! Yii::$app->getModule('user')->isPublicAction($action)) {
+                    return $this->loginRequired();
+                }
             } else {
                 $this->forbidden();
             }

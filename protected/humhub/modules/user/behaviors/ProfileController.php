@@ -75,7 +75,9 @@ class ProfileController extends Behavior
         }
 
         if (Yii::$app->getModule('user')->settings->get('auth.allowGuestAccess') && $this->user->visibility != User::VISIBILITY_ALL && Yii::$app->user->isGuest) {
-            throw new HttpException(401, Yii::t('UserModule.behaviors_ProfileControllerBehavior', 'You need to login to view this user profile!'));
+            if (! Yii::$app->getModule('user')->isPublicAction($action->action)) {
+                throw new HttpException(401, Yii::t('UserModule.behaviors_ProfileControllerBehavior', 'You need to login to view this user profile!'));
+            }
         }
 
         $this->owner->prependPageTitle($this->user->displayName);
